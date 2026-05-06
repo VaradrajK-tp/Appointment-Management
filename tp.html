@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library</title>
+</head>
+<body>
+
+<h2>📚 Book Search</h2>
+
+<input type="text" id="searchInput" placeholder="Enter book name">
+<button onclick="searchBooks()">Search</button>
+
+<div id="results"></div>
+
+<script>
+async function searchBooks() {
+  const query = document.getElementById("searchInput").value;
+
+  const res = await fetch(`https://openlibrary.org/search.json?q=${query}`);
+  const data = await res.json();
+
+  let output = "";
+
+  data.docs.slice(0, 10).forEach(book => {
+    const cover = book.cover_i
+      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+      : "";
+
+    output += `
+      <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+        <img src="${cover}" height="100"><br>
+        <b>${book.title}</b><br>
+        Author: ${book.author_name?.[0] || "N/A"}<br>
+        Year: ${book.first_publish_year || "N/A"}<br>
+
+        <a href="https://openlibrary.org${book.key}" target="_blank">
+          📖 Read Book
+        </a>
+      </div>
+    `;
+  });
+
+  document.getElementById("results").innerHTML = output;
+}
+</script>
+
+</body>
+</html>
